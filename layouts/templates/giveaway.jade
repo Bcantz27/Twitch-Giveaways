@@ -1,0 +1,75 @@
+.container#giveaway(ng-init="initGiveaway()")
+    .row.body-content(ng-if="giveaway == null")
+        .col-lg-12(style="height: 83vh")
+            p.text-center(style="color: white; font-size: 28px; margin-top: 32px") Invalid Giveaway Link
+            p.text-center(style="color: white; font-size: 16px; margin-top: 32px") You will be redirected in 5 seconds.
+    .row.body-content(ng-if="giveaway != null")
+        .well(style="width: 75%; margin: 20px auto;")
+            h1.text-center(style="margin: 0px; font-size: 28px;") {{giveaway.fromUser}} is giving away {{giveaway.item}} on {{giveaway.channel}}'s channel.
+        .col-lg-4(ng-if="isLoggedIn() == true")
+            .well#req
+                h1.text-center(style="font-size: 24px; margin-top: 10px;") Requirements to enter
+                p.text-center(style="font-size: 18px; position: relative;") 
+                    i.fa.fa-times.fa-1x(ng-if="isFollowing == false && giveaway.mustFollow == true" title="You do not pass this requirement" style="color:red")  Must be following: Yes
+                    i.fa.fa-check.fa-1x(ng-if="isFollowing == true && giveaway.mustFollow == true" title="You pass the requirement" style="color:green;")  Must be following: Yes
+                    i.fa.fa-check.fa-1x(ng-if="giveaway.mustFollow == false" title="You pass the requirement" style="color:green;")  Must be following: No
+                p.text-center(style="font-size: 18px;")
+                    i.fa.fa-times.fa-1x(ng-if="isSubbed == false && giveaway.mustSub == true" title="You do not pass this requirement" style="color:red")  Must be subscribed: Yes
+                    i.fa.fa-check.fa-1x(ng-if="isSubbed == true && giveaway.mustSub == true" title="You pass the requirement" style="color:green;")  Must be subscribed: Yes
+                    i.fa.fa-check.fa-1x(ng-if="giveaway.mustSub == false" title="You pass the requirement" style="color:green;")  Must be subscribed: No
+                div(ng-if='giveaway.open == true')
+                    #errors.text-center(ng-if='isEntered == true') You are entered into the giveaway.
+                    div(ng-if='isEntered == false')
+                        p.text-center#success(style="display:none;") You are entered into the giveaway
+                        a.centerBtn.btn.btn-primary#enter(ng-click='enterGiveaway()') Enter Giveaway
+                        #errors.text-center
+        .col-lg-8(ng-if="isLoggedIn() == true")
+            object#live_embed_player_flash(type='application/x-shockwave-flash', height='500', width='100%', data='http://www.twitch.tv/widgets/live_embed_player.swf?channel={{giveaway.channel}}', bgcolor='#000000')
+                param(name='allowFullScreen', value='true')
+                param(name='allowScriptAccess', value='always')
+                param(name='allowNetworking', value='all')
+                param(name='movie', value='http://www.twitch.tv/widgets/live_embed_player.swf')
+                param(name='flashvars', value='hostname=www.twitch.tv&channel={{giveaway.channel}}&auto_play=true&start_volume=25')
+            h3.text-center#entries(style="color:white") Entries: 
+                span#entriesNum {{giveaway.enteredList.length}}
+            .well#wheel
+                div
+                    div(ng-if="giveaway.open == true")
+                        div(ng-if="$root.authUser.username == giveaway.creator")
+                            div(ng-if="rolled == false")
+                                a.btn.btn-primary#roll(style="margin-left: 43%" ng-click="startRoll()") Start Rolling
+                                #rollerror.text-center
+                                p.text-center To begin the selection process press the Start rolling button. Once the proccess begins, we will randomly select a winner from the entries and display the winner. We will also send you an email with who won the giveaway and what they won.
+                            div(ng-if="rolled == true")
+
+                        div
+                            div(ng-if="rolled == false")
+                                p.text-center Standby for rolling to commence...
+                            div(ng-if="rolled == true")
+                                h1.text-center The Winner is: {{giveaway.winner}}
+                                div(ng-if="giveaway.mustClaim == true")
+                                    p.text-center(ng-if="giveaway.claimed == true") Prize Status: Claimed
+                                    p.text-center(ng-if="giveaway.claimed == false") Prize Status: Unclaimed
+                                p.text-center(ng-if="giveaway.mustClaim == false") Prize Status: Claimed
+                                p.text-center(ng-if="$root.authUser.username != giveaway.winner") They have {{timeLeft}} seconds to claim their prize.
+
+                        div(ng-if="rolled == true && $root.authUser.username == giveaway.winner")
+                            h1.text-center You are the Winner!
+                            p.text-center Press the claim button before the time expires.
+                            p.text-center You have {{timeLeft}} seconds to claim!
+                            a.centerBtn.btn.btn-lg.btn-primary(ng-click="claim()") Claim
+                            #claimerror.text-center
+                    div(ng-if="giveaway.open == false")
+                        p.text-center This giveaway is over, the winner was {{giveaway.winner}}
+        .col-lg-8.col-lg-offset-2(ng-if="isLoggedIn() == false")
+            .well(style="margin-top: 150px;")
+                h1.text-center(style="font-size: 24px;") Login with your twitch account to enter!
+                a.centerBtn.btn.btn-primary.btn-lg(style="width: 200px;" href="/auth/twitch") Login
+            .push
+
+block head_end
+    link(rel='stylesheet' href='/css/giveaway.css')
+    link(rel='stylesheet', href='/bower_components/odometer/themes/odometer-theme-default.css')
+
+block body_end
+    script(src='/bower_components/odometer/odometer.js')

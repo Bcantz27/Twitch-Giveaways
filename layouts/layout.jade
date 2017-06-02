@@ -1,0 +1,65 @@
+doctype html
+html(ng-app="myApp")
+  head
+    title= (app.name + " - " + app.slogan)
+    base(href="/")
+    meta(charset="utf-8")
+    meta(name="author" content="" + app.author + "")
+    meta(name="description" content="" + app.desc + "")
+    meta(name="keywords" content="" + app.keywords + "")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel="shortcut icon" href="/favicon.ico")
+    link(rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
+    link(rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css")
+    link(rel='stylesheet' href='/css/style.css')
+    link(rel='stylesheet' href='/css/navbar.css')
+    block head_end
+
+  body
+    script.
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-63990405-3', 'auto');
+        ga('send', 'pageview');
+    nav.navbar.navbar-inverse(ng-controller="NavbarController")
+        .container-fluid
+            .navbar-header
+                button.pull-right.navbar-toggle.collapsed(type='button',  ng-init="navCollapsed = true", ng-click="navCollapsed = !navCollapsed")
+                    span.sr-only Toggle navigation
+                    span.icon-bar
+                    span.icon-bar
+                    span.icon-bar
+                a.pull-left.nav-brand.fa.fa-gift.fa-5x(href="/")
+            .navbar-responsive-collapse.collapse.navbar-collapse(collapse="navCollapsed")
+                ul.nav.navbar-nav.navbar-right(ng-if="$root.authUser != null")
+                    li(ng-if="isAdmin()")
+                        a.text-center(href="/admin") Control Panel
+                    li
+                        a.text-center(href="" ng-click="logout()") Logout 
+                            span.fa.fa-sign-out
+                ul.nav.navbar-nav.navbar-left
+                    li  
+                        a.text-center(href="/about")  About
+                    li  
+                        a.text-center(href="/support")  Support
+    
+    .container-fluid
+        div(ng-view)
+
+    footer
+        p.text-center &copy; 2017 #{app.name}
+
+    script(type='text/javascript' src='/bower_components/jquery/dist/jquery.min.js')
+    script(type='text/javascript' src='/bower_components/angular/angular.min.js')
+    script(type='text/javascript' src='/bower_components/angular-route/angular-route.min.js')
+    script(type='text/javascript' src='/bower_components/angular-bootstrap/ui-bootstrap.min.js')
+    script(type='text/javascript' src='/bower_components/oclazyload/dist/ocLazyLoad.js')
+    script(src="/js/app.js")
+    script(src="/js/directives/directives.js")
+    script(src="/js/controllers/controllers.js")
+    script(src="/js/services/services.js")
+
+    block body_end

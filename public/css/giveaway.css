@@ -1,0 +1,42 @@
+body{
+    background-color: #6441a5;
+}
+
+#giveaway .row > h1{
+    margin-top: 20px;
+    padding: 32px;
+    color: white;
+}
+
+#success{
+    color: green;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#errors{
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+#rollerror{
+    margin-left: auto;
+    margin-right: auto;
+    background-color: tomato;
+    color: white;
+    border-radius: 6px;
+    width: 250px;
+}
+
+#success{
+    color: green;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#errors{
+    color: red;
+    font-size: 16px;
+    font-weight: bold;
+}

@@ -1,0 +1,106 @@
+thead td{
+	font-weight: bold;
+	width: 25%;
+}
+
+textarea{
+    resize: vertical;
+    width: 100%;
+}
+
+li.active{
+	background-color: #EEEEEE;
+}
+
+.centerBtn{
+    display: block;
+    margin: 0 auto;
+    width: auto;
+}
+
+.body-content {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.btn-primary{
+    background-color: #6441a5;
+    border-color: black;
+}
+
+.btn-primary:hover{
+    background-color: #8E6EC9;
+    border-color: black;
+}
+
+
+.sidebar .sidebar-nav.navbar-collapse {
+    padding-right: 0;
+    padding-left: 0;
+}
+
+.sidebar ul li {
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.sidebar ul li a.active {
+    background-color: #eee;
+}
+
+.sidebar .arrow {
+    float: right;
+}
+
+.sidebar .fa.arrow:before {
+    content: "\f104";
+}
+
+.sidebar .active>a>.fa.arrow:before {
+    content: "\f107";
+}
+
+.sidebar .nav-second-level li,
+.sidebar .nav-third-level li {
+    border-bottom: 0!important;
+}
+
+.sidebar .nav-second-level li a {
+    padding-left: 37px;
+}
+
+.sidebar .nav-third-level li a {
+    padding-left: 52px;
+}
+
+}
+
+/* styles for validation helpers */
+.field-validation-error {
+  color: #b94a48;
+}
+.field-validation-valid {
+  display: none;
+}
+input.input-validation-error {
+  border: 1px solid #b94a48;
+}
+input[type="checkbox"].input-validation-error {
+  border: 0 none;
+}
+.validation-summary-errors {
+  color: #b94a48;
+}
+.validation-summary-valid {
+  display: none;
+}
+
+footer{
+    background-color: #19191f;
+    color: white;
+    height: 100px;
+}
+
+footer p{
+    padding-top: 40px;
+    margin-bottom: 0px;
+}

@@ -1,0 +1,81 @@
+*{
+    padding: 0px;
+    margin: 0px;
+}
+
+::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+    width: 12px;
+    background-color: white;
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
+}
+
+body {
+  background-color: rgba(0,0,0,0.1);
+}
+
+.navbar-brand{
+    -webkit-transition: all 0.8s;
+    transition: all 0.8s;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.navbar-brand:hover{
+    transform: scale(1.2,1.2);
+}
+
+.navbar{
+    border-radius: 0px;
+    margin-bottom: 0px;
+    background-color: #19191f;
+}
+
+.nav-brand{
+    -webkit-transition: all 0.8s;
+    transition: all 0.8s;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: #999;
+}
+.nav-brand:hover{
+    transform: scale(1.2,1.2);
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+.navbar-nav{
+    margin-top: 15px;
+}
+
+.navbar-nav li{
+    font-size: 16px;
+}
+
+.ng-valid {
+    border-color: green;
+    outline-color: green;
+}
+
+footer{
+    background-color: #19191f;
+    color: white;
+    height: 100px;
+}
+
+footer p{
+    padding-top: 40px;
+    margin-bottom: 0px;
+}
