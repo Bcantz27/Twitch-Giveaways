@@ -1,0 +1,53 @@
+div(style="padding-top: 10px; padding-bottom: 10px;")
+  .col-md-2
+    .panel.panel-default
+      .panel-heading
+        .panel-title.text-center Navigation
+      .navbar-default.sidebar(role='navigation')
+        .sidebar-nav.navbar-collapse
+          ul#side-menu.nav.in
+            li(ng-class='{active: currentTab == 0}')
+              a(href='', ng-click='setTab(0)')
+                i.fa.fa-dashboard.fa-fw
+                |  Dashboard
+            li(ng-class='{active: currentTab == 1}')
+              a(href='', ng-click='setTab(1)')
+                i.fa.fa-table.fa-fw
+                |  Users
+            li(ng-class='{active: currentTab == 2}')
+              a(href='', ng-click='setTab(2)')
+                i.fa.fa-gift.fa-fw
+                |  Giveaways
+            li(ng-class='{active: currentTab == 3}')
+              a(href='', ng-click='setTab(3)')
+                i.fa.fa-edit.fa-fw
+                |  Mass Mail
+            li(ng-class='{active: currentTab == 4}')
+              a(href='', ng-click='setTab(4)')
+                i.fa.fa-cog.fa-fw
+                |  Settings
+        // /.sidebar-collapse
+  // Dashboard
+  .col-md-10(ng-if='currentTab == 0')
+    include dashboard.jade
+  // /Dashboard
+
+  // Users
+  .col-md-10(ng-if='currentTab == 1')
+    include users.jade
+  // /Users
+
+  // Users
+  .col-md-10(ng-if='currentTab == 2')
+    include giveaways.jade
+  // /Users
+
+  // Mass Mail
+  .col-md-10(ng-if='currentTab == 3')
+    include messaging.jade
+  // /Mass Mail
+
+  // Settings
+  .col-md-10(ng-if='currentTab == 4')
+    include settings.jade
+  // /Settings

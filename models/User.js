@@ -12,6 +12,9 @@ var UserSchema = new mongoose.Schema({
     type: String,
     default: "user"
   },
+  email: {
+    type: String
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -20,6 +23,11 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.methods.setRole = function setRole(role){
     this.role = role;
+    this.save();
+}
+
+UserSchema.methods.setEmail = function setEmail(email){
+    this.email = email;
     this.save();
 }
 

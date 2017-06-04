@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+const AUTO_CLOSE_HR = 5;
 
 // the initial seed
 Math.seed = 6;
@@ -71,6 +72,10 @@ var GiveawaySchema = new mongoose.Schema({
     type: Number,
     default: 60
   },
+  numberOfRolls:{
+    type: Number,
+    default: 0
+  },
   claimTimerStart: {
     type: Date
   },
@@ -112,12 +117,20 @@ GiveawaySchema.methods.start = function start(){
   this.save();
 }
 
-GiveawaySchema.methods.finish = function finish(){
+GiveawaySchema.methods.close = function close(){
   this.open = false;
+  if(this.winner == null){
+    this.winner = this.creator;
+  }
+  if(this.mustClaim == true){
+    this.claimed = true;
+  }
   this.save();
 }
 
 GiveawaySchema.methods.chooseWinner = function chooseWinner(){
+    this.numberOfRolls++;
+
   if(this.enteredList.length == 0){
     //No entered Users
     this.winner = this.creator;
@@ -169,6 +182,14 @@ GiveawaySchema.methods.failedClaim = function failedClaim(){
     return;
   }
 
+  if(((new Date().getTime() - new Date(this.claimTimerStart).getTime())/(60*60*1000)) >= AUTO_CLOSE_HR && this.numberOfRolls >= 10){
+    this.winner = this.creator;
+    this.claimed = true;
+    this.open = false;
+    this.save();
+    return;
+  }
+
   //Find new user from the entered list that isnt the same as the current
   while(flag){
     tempIndex = Math.floor(Math.seededRandom(this.enteredList.length, 0));
@@ -177,6 +198,8 @@ GiveawaySchema.methods.failedClaim = function failedClaim(){
       flag = false;
     }
   }
+
+  this.numberOfRolls++;
   this.claimTimerStart = Date.now();
   this.winner = this.enteredList[winnerIndex];
   this.save();

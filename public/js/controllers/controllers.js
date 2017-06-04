@@ -110,6 +110,56 @@ app.controller('CreateController', ['$scope', '$location','$http', 'Auth',
     }
 ]);
 
+app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
+    function($scope, $location, $http, Auth) {
+        $scope.currentTab = 0;
+
+        $scope.setTab = function(tab){
+            fetchGiveaways();
+            $scope.currentTab = tab;
+        }
+
+        $scope.closeGiveaway = function(index){
+            if($scope.currentTab == 0){
+                $http.post('/api/giveaway/' + $scope.createdGiveaways[index].uniqueLink + '/open', {open: false}).success(function(res) {
+                    console.log(res);
+                    $scope.createdGiveaways[index] = res;
+                });
+            }
+        }
+
+        $scope.gotoGiveaway = function(index){
+
+            if($scope.currentTab == 0){
+                $location.path('/g/'+$scope.createdGiveaways[index].uniqueLink).replace();
+                $scope.$apply();
+            }else if($scope.currentTab == 1){
+                $location.path('/g/'+$scope.enteredGiveaways[index].uniqueLink).replace();
+                $scope.$apply();
+            }else if($scope.currentTab == 1){
+                $location.path('/g/'+$scope.wonGiveaways[index].uniqueLink).replace();
+                $scope.$apply();
+            }
+        }
+
+        var fetchGiveaways = function(){
+            $http.get('/api/giveaway/user/created').success(function(res) {
+                $scope.createdGiveaways = res;
+            });
+
+            $http.get('/api/giveaway/user/entered').success(function(res) {
+                $scope.enteredGiveaways = res;
+            });
+
+            $http.get('/api/giveaway/user/won').success(function(res) {
+                $scope.wonGiveaways = res;
+            });
+        }
+        fetchGiveaways();
+
+    }
+]);
+
 app.controller('GiveawayController', ['$scope', '$location','$interval', '$http', 'Auth',
     function($scope, $location, $interval, $http, Auth) {
         var id = $location.path().split("/")[2] || "Unknown";
@@ -119,11 +169,7 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
         $scope.rolled = false;
         $scope.timeLeft = 60;
 
-        $scope.isLoggedIn = function(){
-            return Auth.isLoggedIn();
-        }
-
-        $scope.initGiveaway = function(){
+        var initGiveaway = function(){
             console.log(id);
             $http.get('/api/giveaway/' + id).success(function(res) {
                 $scope.giveaway = res;
@@ -140,6 +186,12 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
 
                 if($scope.giveaway.winner != null){
                     $scope.rolled = true;
+
+                    $scope.$watch($scope.giveaway.open, function (val) {
+                        if(val == false){
+                            $interval.cancel(giveawayRefreshPromise);
+                        }
+                    });
                 }
 
                 if($scope.giveaway.mustFollow == true){
@@ -157,8 +209,14 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
                     $scope.isEntered = res1;
                 });
 
-                giveawayRefreshPromise = $interval($scope.fetchGiveaway, 1*1000);
+                if($scope.giveaway.open == true)
+                    giveawayRefreshPromise = $interval($scope.fetchGiveaway, 1*1000);
             });
+        }
+        initGiveaway();
+
+        $scope.isLoggedIn = function(){
+            return Auth.isLoggedIn();
         }
 
         $scope.fetchGiveaway = function(){
@@ -258,7 +316,7 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
             return flag;
         }
 
-        $scope.claimTimeLeft = function(){
+        var claimTimeLeft = function(){
             var claimTime = $scope.giveaway.claimTime;;
             var secondsElapsed = 0;
             var timeLeft = $scope.giveaway.claimTime;
@@ -280,7 +338,7 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
         }
 
         $scope.$watch(function () {
-          return $scope.claimTimeLeft();
+          return claimTimeLeft();
         }, function (val) {
            $scope.timeLeft = Math.floor(val);
         });
@@ -445,6 +503,8 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
         $scope.users = {};
         $scope.selectedUserIndex = 0;
         $scope.selectedUser = {};
+        $scope.selectedGiveawayIndex = 0;
+        $scope.selectedGiveaway = {};
         $scope.userEmail = {};
         $scope.massEmail = {};
         $scope.success = "";
@@ -453,9 +513,8 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
         $scope.setTab = function(tab){
             $scope.success = "";
             $scope.dataLoading = false;
-            if(tab == 1 || tab == 2){
-                refreshUsers();
-            }
+            refreshUsers();
+            refreshGiveaways();
             $scope.currentTab = tab;
         }
 
@@ -465,6 +524,13 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
             $scope.userEmail = {};
             $scope.selectedUserIndex = index;
             $scope.selectedUser = $scope.users[index];
+        }
+
+        $scope.setSelectedGiveaway = function(index){
+            $scope.success = "";
+            $scope.dataLoading = false;
+            $scope.selectedGiveawayIndex = index;
+            $scope.selectedGiveaway = $scope.giveaways[index];
         }
 
         $scope.editUser = function(){
@@ -507,6 +573,16 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
             $http.get('/api/user').success(function(res) {
                 $scope.users = res;
                 $scope.selectedUser = $scope.users[$scope.selectedUserIndex];
+            });
+        }
+
+        var refreshGiveaways = function() {
+            $scope.success = "";
+            $scope.selectedGiveawayIndex = 0;
+            $scope.selectedGiveaway = {};
+            $http.get('/api/giveaway').success(function(res) {
+                $scope.giveaways = res;
+                $scope.selectedGiveaway = $scope.giveaways[$scope.selectedGiveawayIndex];
             });
         }
     }

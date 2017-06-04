@@ -1,0 +1,57 @@
+div(style="padding-top: 10px; padding-bottom: 10px;")
+  .col-md-2
+    .panel.panel-default
+      .panel-heading
+        .panel-title.text-center Giveaways
+      .navbar-default.sidebar(role='navigation')
+        .sidebar-nav.navbar-collapse
+          ul#side-menu.nav.in
+            li(ng-class='{active: currentTab == 0}')
+              a(href='', ng-click='setTab(0)')
+                i.fa.fa-dashboard.fa-fw
+                |  Created
+            li(ng-class='{active: currentTab == 1}')
+              a(href='', ng-click='setTab(1)')
+                i.fa.fa-table.fa-fw
+                |  Entered
+            li(ng-class='{active: currentTab == 2}')
+              a(href='', ng-click='setTab(2)')
+                i.fa.fa-gift.fa-fw
+                |  Won
+
+  .col-md-10(ng-if='currentTab == 0')
+    .row
+      .col-lg-12
+        table.table
+          thead
+            tr
+              td(style='width: 50px;') #
+              td Channel
+              td Item
+              td Open
+              td Entries
+              td Winner
+              td Claimed
+              td(style='width: 50px;') Link
+              td(style='width: 50px;') Edit
+              td(style='width: 50px;') Close
+          tbody
+            tr(ng-repeat='giveaway in createdGiveaways track by $index')
+              td(style='width: 50px;') {{$index+1}}
+              td {{giveaway.channel}}
+              td {{giveaway.item}}
+              td {{giveaway.open}}
+              td {{giveaway.enteredList.length}}
+              td {{giveaway.winner}}
+              td {{giveaway.claimed}}
+              td(style='width: 50px;')
+                button.btn(ng-click='gotoGiveaway($index)') Go
+              td(style='width: 50px;')
+                button.btn(ng-click='editGiveaway($index)') Edit
+              td(style='width: 50px;')
+                button.btn(ng-click='closeGiveaway($index)') Close
+
+  .col-md-10(ng-if='currentTab == 1')
+
+
+  .col-md-10(ng-if='currentTab == 2')

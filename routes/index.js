@@ -15,6 +15,12 @@ module.exports = function(passport) {
       res.render("templates/" + filename + ".jade");
     });
 
+    router.get('/templates/admin/:filename', function(req, res){
+      var filename = req.params.filename;
+      if(!filename) return;  // might want to change this
+      res.render("templates/admin/" + filename + ".jade");
+    });
+
     router.get('*', function(req, res) {
         res.render('layout', {
             app: config.app
@@ -22,11 +28,4 @@ module.exports = function(passport) {
     });
 
     return router;
-}
-
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/');
 }

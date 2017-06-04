@@ -1,0 +1,32 @@
+.row
+  .col-lg-8
+    table.table
+      thead
+        tr
+          td(style='width: 50px;') #
+          td Channel
+          td Item
+          td Creator
+          td Open
+          td Entries
+          td Winner
+          td Claimed
+          td(style='width: 50px;') Edit
+      tbody
+        tr(ng-repeat='giveaway in giveaways track by $index')
+          td(style='width: 50px;') {{$index+1}}
+          td {{giveaway.channel}}
+          td {{giveaway.item}}
+          td {{giveaway.creator}}
+          td {{giveaway.open}}
+          td {{giveaway.enteredList.length}}
+          td {{giveaway.winner}}
+          td {{giveaway.claimed}}
+          td(style='width: 50px;')
+            button.btn(ng-click='setSelectedGiveaway($index)') Edit
+  .col-lg-4
+    .panel.panel-default
+      .panel-heading
+        .panel-title.text-center Edit {{selectedGiveawayIndex+1}}
+      .panel-body
+

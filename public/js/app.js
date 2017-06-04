@@ -13,11 +13,24 @@ angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'oc.lazyLoad'])
             })
             .when('/create', {
                 templateUrl: 'templates/create',
-                controller: 'CreateController'
+                controller: 'CreateController',
+                resolve: {
+                    factory: checkRouting("user")
+                }
             })
             .when('/g/:id', {
                 templateUrl: 'templates/giveaway',
-                controller: 'GiveawayController'
+                controller: 'GiveawayController',
+                resolve: {
+                    factory: checkRouting("user")
+                }
+            })
+            .when('/manage', {
+                templateUrl: 'templates/manage',
+                controller: 'ManageController',
+                resolve: {
+                    factory: checkRouting("user")
+                }
             })
             .when('/verify', {
                 templateUrl: 'views/verify.html',
@@ -34,7 +47,7 @@ angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'oc.lazyLoad'])
                 }
             })            
             .when('/admin', {
-                templateUrl: 'views/admin/index.html',
+                templateUrl: 'templates/admin/index',
                 controller: 'AdminController',
                 resolve: {
                     factory: checkRouting("admin"),

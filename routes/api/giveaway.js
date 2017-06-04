@@ -59,16 +59,23 @@ router.get('/:id', utils.ensureAuthenticated, function(req, res) {
 });
 
 router.get('/user/created', utils.ensureAuthenticated, function(req, res) {
-    Giveaway.findOne({creator: req.user.username}, function(err, giveaways){
+    Giveaway.find({creator: req.user.username}, function(err, giveaways){
         res.json(giveaways);
     });
 });
 
 router.get('/user/entered', utils.ensureAuthenticated, function(req, res) {
-    Giveaway.findOne({enteredList: { "$in" : [req.user.username]}}, function(err, giveaways){
+    Giveaway.find({enteredList: { "$in" : [req.user.username]}}, function(err, giveaways){
         res.json(giveaways);
     });
 });
+
+router.get('/user/won', utils.ensureAuthenticated, function(req, res) {
+    Giveaway.find({winner: req.user.username}, function(err, giveaways){
+        res.json(giveaways);
+    });
+});
+
 
 router.get('/:id/entered', utils.ensureAuthenticated, function(req, res) {
     var id = req.params.id;
@@ -97,7 +104,10 @@ router.post('/:id/enter', utils.ensureAuthenticated, function(req, res) {
 router.post('/:id/roll', utils.ensureAuthenticated, function(req, res) {
     var id = req.params.id;
 
-    Giveaway.findOne({uniqueLink: id}, function(err, giveaway){
+    Giveaway.findOne({
+        uniqueLink: id,
+        creator: req.user.username
+    }, function(err, giveaway){
         if(giveaway.chooseWinner()){
 
             giveawayTimers[id] = setInterval(function () {
@@ -123,7 +133,10 @@ router.post('/:id/roll', utils.ensureAuthenticated, function(req, res) {
 router.post('/:id/claim', utils.ensureAuthenticated, function(req, res) {
     var id = req.params.id;
 
-    Giveaway.findOne({uniqueLink: id}, function(err, giveaway){
+    Giveaway.findOne({
+        uniqueLink: id, 
+        enteredList: { "$in" : [req.user.username]}
+    }, function(err, giveaway){
         if(giveaway.userClaim(req.user.username)){
             clearInterval(giveawayTimers[id]);
             res.send(true);
@@ -135,7 +148,19 @@ router.post('/:id/claim', utils.ensureAuthenticated, function(req, res) {
 //----------/READ----------//
 
 //----------UPDATE----------//
+router.post('/:id/open', utils.ensureAuthenticated, function(req, res) {
+    var id = req.params.id;
 
+    Giveaway.findOneAndUpdate({
+        uniqueLink: id,
+        creator: req.user.username
+    }, {
+        open: req.body.open
+    }, function(err, giveaway) {
+        giveaway.close();
+        res.json(giveaway);
+    });
+});
 //----------/UPDATE----------//
 
 //----------DELETE----------//

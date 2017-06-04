@@ -38,6 +38,9 @@ html(ng-app="myApp")
                     li(ng-if="isAdmin()")
                         a.text-center(href="/admin") Control Panel
                     li
+                        a.text-center(href="/manage") Manage 
+                            span.fa.fa-cog
+                    li
                         a.text-center(href="" ng-click="logout()") Logout 
                             span.fa.fa-sign-out
                 ul.nav.navbar-nav.navbar-left

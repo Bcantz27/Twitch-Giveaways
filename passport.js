@@ -129,6 +129,9 @@ module.exports = function(passport) {
             'twitchId': profile.id
         }, function(err, user) {
             if (user) {
+                if(user.email != profile.email){
+                    user.setEmail(profile.email);
+                }
                 return done(null, user);
             } else {
                 User.create({
