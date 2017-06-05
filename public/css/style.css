@@ -18,6 +18,18 @@ li.active{
     width: auto;
 }
 
+.closeBtn{
+    right: 6%;
+    top: 8px;
+    position: absolute;
+    border: 1px solid #ddd;
+    padding: 3px 6px;
+}
+
+.checkbox{
+    padding-left: 40px;
+}
+
 .body-content {
     padding-left: 25px;
     padding-right: 25px;

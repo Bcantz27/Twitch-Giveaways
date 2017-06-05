@@ -21,7 +21,7 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
 
   .col-md-10(ng-if='currentTab == 0')
     .row
-      .col-lg-12
+      div(ng-class="showEditPanel ? 'col-lg-8' : 'col-lg-12'")
         table.table
           thead
             tr
@@ -47,9 +47,34 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
               td(style='width: 50px;')
                 button.btn(ng-click='gotoGiveaway($index)') Go
               td(style='width: 50px;')
-                button.btn(ng-click='editGiveaway($index)') Edit
+                button.btn(ng-click='openEditPanel($index)') Edit
               td(style='width: 50px;')
-                button.btn(ng-click='closeGiveaway($index)') Close
+                button.btn(ng-click='closeGiveaway($index)' ng-if="giveaway.open == true") Close
+      .col-lg-4(ng-if="showEditPanel == true")
+        .panel.panel-default
+          .panel-heading
+            .panel-title.text-center Edit {{selectedGiveawayIndex+1}}
+            .a.btn.closeBtn(ng-click="closeEditPanel()") x
+          .panel-body
+            .alert.alert-success(ng-if='success.length > 0') {{success}}
+            form(ng-submit='editGiveaway()', name='form', role='form')
+              .form-group
+                label(for='channel') Channel:
+                input.form-control(type='text', ng-model='selectedGiveaway.channel', required='')
+              .form-group
+                label(for='item') Item:
+                input.form-control(type='text', ng-model='selectedGiveaway.item', required='')
+              .form-group
+                label(for='requirements') Requirements:
+                  .checkbox
+                    input(type='checkbox' ng-model='selectedGiveaway.mustFollow' ng-value="true" name='followReq')
+                    | Following
+                  .checkbox
+                    input(type='checkbox' ng-model='selectedGiveaway.mustSub' ng-value="true" name='subReq')
+                    | Subscribe
+              .form-actions
+                button.btn.btn-primary(type='submit', ng-disabled='form.$invalid || dataLoading') Update
+                img(ng-if='dataLoading', src='data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==')
 
   .col-md-10(ng-if='currentTab == 1')
 

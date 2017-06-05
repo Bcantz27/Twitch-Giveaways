@@ -113,6 +113,11 @@ app.controller('CreateController', ['$scope', '$location','$http', 'Auth',
 app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
     function($scope, $location, $http, Auth) {
         $scope.currentTab = 0;
+        $scope.showEditPanel = false;
+        $scope.selectedGiveawayIndex = 0;
+        $scope.selectedGiveaway = {};
+        $scope.success = "";
+        $scope.dataLoading = false;
 
         $scope.setTab = function(tab){
             fetchGiveaways();
@@ -122,22 +127,39 @@ app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
         $scope.closeGiveaway = function(index){
             if($scope.currentTab == 0){
                 $http.post('/api/giveaway/' + $scope.createdGiveaways[index].uniqueLink + '/open', {open: false}).success(function(res) {
-                    console.log(res);
                     $scope.createdGiveaways[index] = res;
                 });
             }
         }
 
-        $scope.gotoGiveaway = function(index){
+        $scope.editGiveaway = function(){
+            $scope.success = "";
+            $scope.dataLoading = true;
+            $http.post('/api/user/role/' + $scope.selectedUser._id, $scope.selectedUser).success(function(res) {
 
+            });
+        }
+
+        $scope.openEditPanel = function(index){
+            $scope.showEditPanel = true;
+            $scope.selectedGiveawayIndex  = index;
+            $scope.selectedGiveaway = $scope.createdGiveaways[index];
+        }
+
+        $scope.closeEditPanel = function(){
+            $scope.showEditPanel = false;
+            $scope.selectedGiveawayIndex  = 0;
+        }
+
+        $scope.gotoGiveaway = function(index){
             if($scope.currentTab == 0){
-                $location.path('/g/'+$scope.createdGiveaways[index].uniqueLink).replace();
+                $location.path('/g/' + $scope.createdGiveaways[index].uniqueLink).replace();
                 $scope.$apply();
             }else if($scope.currentTab == 1){
-                $location.path('/g/'+$scope.enteredGiveaways[index].uniqueLink).replace();
+                $location.path('/g/' + $scope.enteredGiveaways[index].uniqueLink).replace();
                 $scope.$apply();
             }else if($scope.currentTab == 1){
-                $location.path('/g/'+$scope.wonGiveaways[index].uniqueLink).replace();
+                $location.path('/g/' + $scope.wonGiveaways[index].uniqueLink).replace();
                 $scope.$apply();
             }
         }
@@ -364,49 +386,6 @@ app.controller('VerificationController', ['$scope', 'Auth', '$http','$routeParam
             });
         }
         
-    }
-]);
-
-app.controller('ToDoController', ['$scope', '$http',
-    function($scope, $http) {
-        var refresh = function() {
-            $http.get('/api/todo/all').success(function(res) {
-                $scope.todolist = res;
-            });
-        }
-        refresh();
-
-        $scope.addTask = function() {
-            if ($scope.task.name != "") {
-                $http.post('/api/todo/task', $scope.task).success(function(res) {
-                    $scope.task = "";
-                    $scope.todolist = res;
-                    refresh();
-                });
-            }
-        };
-
-        $scope.marktaskdone = function(id) {
-            $http.post('/api/todo/done/' + id).success(function(res) {
-                $scope.todolist = res;
-                refresh();
-            });
-        };
-
-        $scope.marktasknotdone = function(id) {
-            $http.post('/api/todo/notdone/' + id).success(function(res) {
-                $scope.todolist = res;
-                refresh();
-            });
-        };
-
-        $scope.removetask = function(id) {
-            $http.delete('/api/todo/' + id).success(function(res) {
-                $scope.todolist = res;
-                refresh();
-            });
-        };
-
     }
 ]);
 
