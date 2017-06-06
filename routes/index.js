@@ -21,6 +21,12 @@ module.exports = function(passport) {
       res.render("templates/admin/" + filename + ".jade");
     });
 
+    router.get('/templates/popups/:filename', function(req, res){
+      var filename = req.params.filename;
+      if(!filename) return;  // might want to change this
+      res.render("templates/popups/" + filename + ".jade");
+    });
+
     router.get('*', function(req, res) {
         res.render('layout', {
             app: config.app

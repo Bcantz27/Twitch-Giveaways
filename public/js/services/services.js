@@ -8,14 +8,14 @@ angular.module('myApp').factory('Auth', ['$q', '$http', '$location', '$rootScope
         authService.requestUser = function() {
             var deferred = $q.defer();
             console.log("Requesting User");
-            $http.get('/auth/user').success(function(user) {
-                if (user) {
-                    $rootScope.authUser = user;
-                    $rootScope.authUser.createdAt = new Date(user.createdAt).toDateString();
+            $http.get('/auth/user').then(function(res) {
+                if (res.data) {
+                    $rootScope.authUser = res.data;
+                    $rootScope.authUser.createdAt = new Date(res.data.createdAt).toDateString();
                 }
 
-                deferred.resolve(user);
-            }).error(function(error) {
+                deferred.resolve(res.data);
+            },function(error) {
                 deferred.reject(error);
             });
 
@@ -41,15 +41,15 @@ angular.module('myApp').factory('Auth', ['$q', '$http', '$location', '$rootScope
         authService.login = function(creds) {
             var deferred = $q.defer();
 
-            $http.post('/auth/login', creds).success(function(user) {
-                if (user) {
-                    $rootScope.authUser = user;
+            $http.post('/auth/login', creds).then(function(res) {
+                if (res.data) {
+                    $rootScope.authUser = res.data;
                     $location.path('/');
-                    deferred.resolve(user);
+                    deferred.resolve(res.data);
                 } else {
                     deferred.reject('Incorrect');
                 }
-            }).error(function(error) {
+            }, function(error) {
                 deferred.reject("Incorrect Username or Password.");
             });
 
@@ -59,16 +59,16 @@ angular.module('myApp').factory('Auth', ['$q', '$http', '$location', '$rootScope
         authService.loginTwitch = function(creds) {
             var deferred = $q.defer();
 
-            $http.post('/auth/twitch').success(function(user) {
+            $http.post('/auth/twitch').then(function(res) {
                 console.log("Auth");
-                if (user) {
-                    $rootScope.authUser = user;
+                if (res.data) {
+                    $rootScope.authUser = res.data;
                     $location.path('/');
-                    deferred.resolve(user);
+                    deferred.resolve(res.data);
                 } else {
                     deferred.reject('Incorrect');
                 }
-            }).error(function(error) {
+            }, function(error) {
                 deferred.reject("Incorrect Username or Password.");
             });
 
@@ -93,15 +93,15 @@ angular.module('myApp').factory('Auth', ['$q', '$http', '$location', '$rootScope
                 return deferred.promise;
             }
 
-            $http.post('/auth/signup', creds).success(function(user) {
-                if (user) {
-                    $rootScope.authUser = user;
+            $http.post('/auth/signup', creds).then(function(res) {
+                if (res.data) {
+                    $rootScope.authUser = res.data;
                     $location.path('/');
-                    deferred.resolve(user);
+                    deferred.resolve(res.data);
                 } else {
                     deferred.reject('Error Occurred');
                 }
-            }).error(function(error) {
+            }, function(error) {
                 deferred.reject("Error Occurred.");
             });
 
@@ -112,9 +112,9 @@ angular.module('myApp').factory('Auth', ['$q', '$http', '$location', '$rootScope
             $rootScope.authUser = null;
             var deferred = $q.defer();
 
-            $http.post('/auth/logout').success(function(user) {
-                deferred.resolve(user);
-            }).error(function(err) {
+            $http.post('/auth/logout').then(function(res) {
+                deferred.resolve(res.data);
+            }, function(err) {
                 deferred.reject(err);
             });
 

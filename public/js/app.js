@@ -92,9 +92,9 @@ var checkRouting = function(reqRole) {
         } else {
             var deferred = $q.defer();
             $http.get("/auth/user")
-                .success(function(response) {
-                    if (response) {
-                        $rootScope.authUser = response;
+                .then(function(res) {
+                    if (res.data) {
+                        $rootScope.authUser = res.data;
                         $rootScope.authUser.createdAt = new Date($rootScope.authUser.createdAt).toDateString();
                         if ($rootScope.authUser.role == "admin" || $rootScope.authUser.role == reqRole) {
                             deferred.resolve(true);
@@ -110,8 +110,7 @@ var checkRouting = function(reqRole) {
                             error: 'You must login to view that page.'
                         });
                     }
-                })
-                .error(function() {
+                }, function(error) {
                     deferred.reject();
                     $location.path("/login").search({
                         error: 'You must login to view that page.'

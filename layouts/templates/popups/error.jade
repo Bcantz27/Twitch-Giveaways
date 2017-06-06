@@ -1,0 +1,17 @@
+.container(ng-app='app', ng-controller='PopupController')
+	h3 Angular Modal Service
+	a.btn.btn-default(href='', ng-click='show()') Show a Modal
+	p {{message}}
+	// The actual modal template, just a bit o bootstrap
+script(type='text/ng-template', id='error.html')
+	.modal.fade
+		.modal-dialog
+			.modal-content
+				.modal-header
+					button.close(type='button', ng-click="close('Cancel')", data-dismiss='modal', aria-hidden='true') ×
+					h4.modal-title Yes or No?
+				.modal-body
+					p It's your call...
+				.modal-footer
+					button.btn.btn-default(type='button', ng-click="close('No')", data-dismiss='modal') No
+					button.btn.btn-primary(type='button', ng-click="close('Yes')", data-dismiss='modal') Yes

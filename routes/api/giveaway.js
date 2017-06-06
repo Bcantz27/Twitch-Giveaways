@@ -161,6 +161,26 @@ router.post('/:id/open', utils.ensureAuthenticated, function(req, res) {
         res.json(giveaway);
     });
 });
+
+router.post('/:id/update', utils.ensureAuthenticated, function(req, res) {
+    var id = req.params.id;
+
+    Giveaway.findOneAndUpdate({
+        uniqueLink: id,
+        creator: req.user.username
+    }, {
+        channel: req.body.channel,
+        item: req.body.item,
+        fromUser: req.body.fromUser,
+        mustClaim: req.body.mustClaim,
+        claimTime: req.body.claimTime,
+        mustFollow: req.body.mustFollow,
+        mustSub: req.body.mustSub,
+        emailCreator: req.body.emailCreator
+    }, function(err, giveaway) {
+        res.json(giveaway);
+    });
+});
 //----------/UPDATE----------//
 
 //----------DELETE----------//

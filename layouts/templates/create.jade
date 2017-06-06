@@ -9,11 +9,11 @@
             .form-group
                 label Are you giving this item away?
                 p Who has provided the item?
-                input#yes(type="radio", name="from", value="1", checked )
+                input(type="radio" name="from" ng-model='fromUser' ng-value="true")
                 | Yes  
-                input#no(type="radio", name="from", value="0")
+                input(type="radio" name="from" ng-model='fromUser' ng-value="false")
                 |  No
-                span#fromname(style="display:none;")
+                span(ng-if='fromUser == false')
                     p Enter the name of the person who provided the item.
                     input.form-control(ng-model="giveaway.fromUser", type="text", maxlength="32")
             .form-group

@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('myApp');
+var app = angular.module('myApp');  
 
 app.controller('AuthController', ['$scope', '$location', 'Auth', '$routeParams',
     function($scope, $location, Auth, $routeParams) {
@@ -46,6 +46,14 @@ app.controller('AuthController', ['$scope', '$location', 'Auth', '$routeParams',
     }
 ]);
 
+app.controller('PopupController', function($scope, close) {
+  
+     $scope.close = function(result) {
+        close(result, 500); // close, but give 500ms for bootstrap to animate
+     };
+
+});
+
 app.controller('NavbarController', ['$scope', '$location', 'Auth',
     function($scope, $location, Auth) {
 
@@ -80,14 +88,14 @@ app.controller('MainController', ['$scope', '$window', '$http', 'Auth',
         }
 
         $scope.fetchStats = function(){
-            $http.get('/api/user/stats/total').success(function(res) {
-                $scope.totalUsers = res;
+            $http.get('/api/user/stats/total').then(function(res) {
+                $scope.totalUsers = res.data;
             });
-            $http.get('/api/giveaway/stats/total').success(function(res) {
-                $scope.totalGiveaways = res;
+            $http.get('/api/giveaway/stats/total').then(function(res) {
+                $scope.totalGiveaways = res.data;
             });
-            $http.get('/api/giveaway/stats/active').success(function(res) {
-                $scope.totalActiveGiveaways = res;
+            $http.get('/api/giveaway/stats/active').then(function(res) {
+                $scope.totalActiveGiveaways = res.data;
             });
         }
 
@@ -96,14 +104,14 @@ app.controller('MainController', ['$scope', '$window', '$http', 'Auth',
 
 app.controller('CreateController', ['$scope', '$location','$http', 'Auth',
     function($scope, $location, $http, Auth) {
-
+        $scope.fromUser = true;
         $scope.isLoggedIn = function(){
             return Auth.isLoggedIn();
         }
 
         $scope.createGiveaway = function(){
-            $http.post('/api/giveaway/create', $scope.giveaway).success(function(res) {
-                $location.path('/g/'+res).replace();
+            $http.post('/api/giveaway/create', $scope.giveaway).then(function(res) {
+                $location.path('/g/'+res.data).replace();
                 $scope.$apply();
             });
         }
@@ -126,8 +134,9 @@ app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
 
         $scope.closeGiveaway = function(index){
             if($scope.currentTab == 0){
-                $http.post('/api/giveaway/' + $scope.createdGiveaways[index].uniqueLink + '/open', {open: false}).success(function(res) {
-                    $scope.createdGiveaways[index] = res;
+                $http.post('/api/giveaway/' + $scope.createdGiveaways[index].uniqueLink + '/open', {open: false}).then(function(res) {
+                    $scope.createdGiveaways[index] = res.data;
+                    $scope.closeEditPanel();
                 });
             }
         }
@@ -135,15 +144,24 @@ app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
         $scope.editGiveaway = function(){
             $scope.success = "";
             $scope.dataLoading = true;
-            $http.post('/api/user/role/' + $scope.selectedUser._id, $scope.selectedUser).success(function(res) {
-
+            $http.post('/api/giveaway/' + $scope.selectedGiveaway.uniqueLink + '/update', $scope.selectedGiveaway).then(function(res) {
+                console.log("Edited");
+                console.log(res.data);
+                $scope.selectedGiveaway = res.data;
+                $scope.createdGiveaways[$scope.selectedGiveawayIndex] = res.data;
+                $scope.success = "Settings Updated";
+                $scope.dataLoading = false;
             });
         }
 
         $scope.openEditPanel = function(index){
-            $scope.showEditPanel = true;
-            $scope.selectedGiveawayIndex  = index;
-            $scope.selectedGiveaway = $scope.createdGiveaways[index];
+            if($scope.createdGiveaways[index].open == false){
+                //Error Popup
+            }else{
+                $scope.showEditPanel = true;
+                $scope.selectedGiveawayIndex  = index;
+                $scope.selectedGiveaway = $scope.createdGiveaways[index];
+            }
         }
 
         $scope.closeEditPanel = function(){
@@ -165,16 +183,16 @@ app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
         }
 
         var fetchGiveaways = function(){
-            $http.get('/api/giveaway/user/created').success(function(res) {
-                $scope.createdGiveaways = res;
+            $http.get('/api/giveaway/user/created').then(function(res) {
+                $scope.createdGiveaways = res.data;
             });
 
-            $http.get('/api/giveaway/user/entered').success(function(res) {
-                $scope.enteredGiveaways = res;
+            $http.get('/api/giveaway/user/entered').then(function(res) {
+                $scope.enteredGiveaways = res.data;
             });
 
-            $http.get('/api/giveaway/user/won').success(function(res) {
-                $scope.wonGiveaways = res;
+            $http.get('/api/giveaway/user/won').then(function(res) {
+                $scope.wonGiveaways = res.data;
             });
         }
         fetchGiveaways();
@@ -193,8 +211,8 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
 
         var initGiveaway = function(){
             console.log(id);
-            $http.get('/api/giveaway/' + id).success(function(res) {
-                $scope.giveaway = res;
+            $http.get('/api/giveaway/' + id).then(function(res) {
+                $scope.giveaway = res.data;
                 $scope.timeLeft = $scope.giveaway.claimTime;
 
                 console.log($scope.giveaway.winner);
@@ -217,18 +235,18 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
                 }
 
                 if($scope.giveaway.mustFollow == true){
-                    $http.get('/api/user/follows/' + $scope.giveaway.channel).success(function(res1) {
-                        $scope.isFollowing = res1;
+                    $http.get('/api/user/follows/' + $scope.giveaway.channel).then(function(res1) {
+                        $scope.isFollowing = res1.data;
                     });
                 }
                 if($scope.giveaway.mustSub == true){
-                    $http.get('/api/user/subscribed/' + $scope.giveaway.channel).success(function(res1) {
-                        $scope.isSubbed = (res1 == 'true');
+                    $http.get('/api/user/subscribed/' + $scope.giveaway.channel).then(function(res1) {
+                        $scope.isSubbed = (res1.data == 'true');
                     });
                 }
 
-                $http.get('/api/giveaway/'+ id + '/entered').success(function(res1) {
-                    $scope.isEntered = res1;
+                $http.get('/api/giveaway/'+ id + '/entered').then(function(res1) {
+                    $scope.isEntered = res1.data;
                 });
 
                 if($scope.giveaway.open == true)
@@ -243,8 +261,8 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
 
         $scope.fetchGiveaway = function(){
 
-            $http.get('/api/giveaway/' + id).success(function(res) {
-                $scope.giveaway = res;
+            $http.get('/api/giveaway/' + id).then(function(res) {
+                $scope.giveaway = res.data;
 
                 if($scope.giveaway.winner != null){
                     $scope.rolled = true;
@@ -275,8 +293,8 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
         $scope.enterGiveaway = function(){
             if($scope.isEntered == false){
                 if($scope.meetsRequirements() == true){
-                    $http.post('/api/giveaway/'+ id + '/enter').success(function(res) {
-                        if(res == true){
+                    $http.post('/api/giveaway/'+ id + '/enter').then(function(res) {
+                        if(res.data == true){
                             $scope.isEntered = true;
                         }else{
                             $('#errors').html('Error occured while entering.');
@@ -293,8 +311,8 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
         $scope.startRoll = function(){
             if($scope.giveaway.open == true){
                 if(Auth.getUser().username == $scope.giveaway.creator){
-                    $http.post('/api/giveaway/'+ id + '/roll').success(function(res) {
-                        if(res == true){
+                    $http.post('/api/giveaway/'+ id + '/roll').then(function(res) {
+                        if(res.data == true){
                             $scope.rolled = true;
                         }else{
                             $('#rollerror').html('Error occured while rolling.');
@@ -310,8 +328,8 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
 
         $scope.claim = function(){
             if($scope.giveaway.open == true && Auth.getUser().username == $scope.giveaway.winner){
-                $http.post('/api/giveaway/'+ id + '/claim').success(function(res) {
-                    if(res == true){
+                $http.post('/api/giveaway/'+ id + '/claim').then(function(res) {
+                    if(res.data == true){
                         $scope.giveaway.claimed = true;
                     }else{
                         $('#claimerror').html('Error occured while claiming.');
@@ -410,13 +428,13 @@ app.controller('AccountController', ['$scope', 'Auth', '$http',
             }
 
             $scope.dataLoading = true;
-            $http.post('/api/user/password', $scope.user).success(function(res) {
+            $http.post('/api/user/password', $scope.user).then(function(res) {
                 $scope.dataLoading = false;
-                if(res == 'true'){
+                if(res.data == 'true'){
                     Auth.requestUser();
                     $scope.success = "Password Updated";
                 }else{
-                    $scope.error = res;
+                    $scope.error = res.data;
                 }
                 $scope.user = {};
             });
@@ -427,13 +445,13 @@ app.controller('AccountController', ['$scope', 'Auth', '$http',
             $scope.success = "";
             $scope.dataLoading = true;
 
-            $http.post('/api/user/email', $scope.user).success(function(res) {
+            $http.post('/api/user/email', $scope.user).then(function(res) {
                 $scope.dataLoading = false;
-                if(res == 'true'){
+                if(res.data == 'true'){
                     Auth.requestUser();
                     $scope.success = "Email Updated";
                 }else{
-                    $scope.error = res;
+                    $scope.error = res.data;
                 }
                 $scope.user = {};
             });
@@ -449,13 +467,13 @@ app.controller('AccountController', ['$scope', 'Auth', '$http',
             $scope.success = "";
             $scope.dataLoading = true;
 
-            $http.post('/api/user/settings', $scope.user).success(function(res) {
+            $http.post('/api/user/settings', $scope.user).then(function(res) {
                 $scope.dataLoading = false;
-                if(res == 'true'){
+                if(res.data == 'true'){
                     Auth.requestUser();
                     $scope.success = "Settings Updated";
                 }else{
-                    $scope.error = res;
+                    $scope.error = res.data;
                 }
                 $scope.user = {};
             });
@@ -464,12 +482,12 @@ app.controller('AccountController', ['$scope', 'Auth', '$http',
 
         $scope.resendVerify = function(){
             $scope.success = "";
-            $http.post('/api/email/reverify').success(function(res) {
-                if(res == 'true'){
+            $http.post('/api/email/reverify').then(function(res) {
+                if(res.data == 'true'){
                     Auth.requestUser();
                     $scope.success = "Email Sent";
                 }else{
-                    $scope.error = res;
+                    $scope.error = res.data;
                 }
             });
         }
@@ -515,11 +533,11 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
         $scope.editUser = function(){
             $scope.success = "";
             $scope.dataLoading = true;
-            $http.post('/api/user/role/' + $scope.selectedUser._id, $scope.selectedUser).success(function(res) {
-                $http.post('/api/user/email/' + $scope.selectedUser._id, $scope.selectedUser).success(function(res) {
+            $http.post('/api/user/role/' + $scope.selectedUser._id, $scope.selectedUser).then(function(res) {
+                $http.post('/api/user/email/' + $scope.selectedUser._id, $scope.selectedUser).then(function(res1) {
                     $scope.dataLoading = false;
                     $scope.success = "User Updated";
-                    $scope.users[$scope.selectedUser] = res;
+                    $scope.users[$scope.selectedUser] = res1.data;
 
                 });
             });
@@ -528,7 +546,7 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
         $scope.sendMail = function(){
             $scope.success = "";
             $scope.dataLoading = true;
-            $http.post('/api/email/user/' + $scope.selectedUser._id, {subject: $scope.userEmail.subject, message: $scope.userEmail.message}).success(function(res) {
+            $http.post('/api/email/user/' + $scope.selectedUser._id, {subject: $scope.userEmail.subject, message: $scope.userEmail.message}).then(function(res) {
                 $scope.success = "Message Sent";
                 $scope.userEmail = {};
                 $scope.dataLoading = false;
@@ -538,7 +556,7 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
         $scope.massMail = function(){
             $scope.success = "";
             $scope.dataLoading = true;
-            $http.post('/api/email/all', {subject: $scope.massEmail.subject, message: $scope.massEmail.message}).success(function(res) {
+            $http.post('/api/email/all', {subject: $scope.massEmail.subject, message: $scope.massEmail.message}).then(function(res) {
                 $scope.success = "Message Sent";
                 $scope.massEmail = {};
                 $scope.dataLoading = false;
@@ -549,8 +567,8 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
             $scope.success = "";
             $scope.selectedUserIndex = 0;
             $scope.selectedUser = {};
-            $http.get('/api/user').success(function(res) {
-                $scope.users = res;
+            $http.get('/api/user').then(function(res) {
+                $scope.users = res.data;
                 $scope.selectedUser = $scope.users[$scope.selectedUserIndex];
             });
         }
@@ -559,8 +577,8 @@ app.controller('AdminController', ['$scope', 'Auth', '$http',
             $scope.success = "";
             $scope.selectedGiveawayIndex = 0;
             $scope.selectedGiveaway = {};
-            $http.get('/api/giveaway').success(function(res) {
-                $scope.giveaways = res;
+            $http.get('/api/giveaway').then(function(res) {
+                $scope.giveaways = res.data;
                 $scope.selectedGiveaway = $scope.giveaways[$scope.selectedGiveawayIndex];
             });
         }

@@ -21,13 +21,14 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
 
   .col-md-10(ng-if='currentTab == 0')
     .row
-      div(ng-class="showEditPanel ? 'col-lg-8' : 'col-lg-12'")
+      div(ng-class="showEditPanel ? 'col-lg-9' : 'col-lg-12'")
         table.table
           thead
             tr
               td(style='width: 50px;') #
               td Channel
               td Item
+              td From
               td Open
               td Entries
               td Winner
@@ -40,6 +41,7 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
               td(style='width: 50px;') {{$index+1}}
               td {{giveaway.channel}}
               td {{giveaway.item}}
+              td {{giveaway.fromUser}}
               td {{giveaway.open}}
               td {{giveaway.enteredList.length}}
               td {{giveaway.winner}}
@@ -50,7 +52,7 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
                 button.btn(ng-click='openEditPanel($index)') Edit
               td(style='width: 50px;')
                 button.btn(ng-click='closeGiveaway($index)' ng-if="giveaway.open == true") Close
-      .col-lg-4(ng-if="showEditPanel == true")
+      .col-lg-3(ng-if="showEditPanel == true")
         .panel.panel-default
           .panel-heading
             .panel-title.text-center Edit {{selectedGiveawayIndex+1}}
@@ -65,6 +67,15 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
                 label(for='item') Item:
                 input.form-control(type='text', ng-model='selectedGiveaway.item', required='')
               .form-group
+                label(for='from') From:
+                input.form-control(type='text', ng-model='selectedGiveaway.fromUser', required='')
+              .form-group
+                label(for='mustClaim') Must Claim: 
+                  input(type='checkbox' ng-model='selectedGiveaway.mustClaim' ng-value="true" name='claimReq')
+              .form-group(ng-if='selectedGiveaway.mustClaim == true')
+                  label(for='claimTime') Claim Time (seconds):
+                  input.form-control(type="number", name="claimTime", ng-model="selectedGiveaway.claimTime", min="30", max="600" required='')
+              .form-group
                 label(for='requirements') Requirements:
                   .checkbox
                     input(type='checkbox' ng-model='selectedGiveaway.mustFollow' ng-value="true" name='followReq')
@@ -72,6 +83,9 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
                   .checkbox
                     input(type='checkbox' ng-model='selectedGiveaway.mustSub' ng-value="true" name='subReq')
                     | Subscribe
+              .form-group
+                label(for='emailCreator') Email me the results: 
+                  input(type='checkbox' ng-model='selectedGiveaway.emailCreator' ng-value="true" name='emailReq')
               .form-actions
                 button.btn.btn-primary(type='submit', ng-disabled='form.$invalid || dataLoading') Update
                 img(ng-if='dataLoading', src='data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==')
