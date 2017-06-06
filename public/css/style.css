@@ -12,6 +12,18 @@ li.active{
 	background-color: #EEEEEE;
 }
 
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    min-height: 100%;
+    height: auto !important; /* This line and the next line are not necessary unless you need IE6 support */
+    height: 100%;
+    margin: 0 auto -100px; /* the bottom margin is the negative value of the footer's height */
+}
+
 .centerBtn{
     display: block;
     margin: 0 auto;
@@ -109,6 +121,10 @@ input[type="checkbox"].input-validation-error {
 footer{
     background-color: #19191f;
     color: white;
+    height: 100px;
+}
+
+.push{
     height: 100px;
 }
 

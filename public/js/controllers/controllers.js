@@ -54,6 +54,14 @@ app.controller('PopupController', function($scope, close) {
 
 });
 
+app.controller('AboutController', function($scope, close) {
+
+});
+
+app.controller('SupportController', function($scope, close) {
+
+});
+
 app.controller('NavbarController', ['$scope', '$location', 'Auth',
     function($scope, $location, Auth) {
 
@@ -176,7 +184,7 @@ app.controller('ManageController', ['$scope', '$location','$http', 'Auth',
             }else if($scope.currentTab == 1){
                 $location.path('/g/' + $scope.enteredGiveaways[index].uniqueLink).replace();
                 $scope.$apply();
-            }else if($scope.currentTab == 1){
+            }else if($scope.currentTab == 2){
                 $location.path('/g/' + $scope.wonGiveaways[index].uniqueLink).replace();
                 $scope.$apply();
             }
@@ -214,6 +222,7 @@ app.controller('GiveawayController', ['$scope', '$location','$interval', '$http'
             $http.get('/api/giveaway/' + id).then(function(res) {
                 $scope.giveaway = res.data;
                 $scope.timeLeft = $scope.giveaway.claimTime;
+                $scope.chatSrc = "http://twitch.tv/chat/embed?channel=" + $scope.giveaway.channel + "&popout_chat=true";
 
                 console.log($scope.giveaway.winner);
 

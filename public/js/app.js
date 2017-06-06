@@ -11,6 +11,14 @@ angular.module('myApp', ['ngRoute', 'ui.bootstrap', 'oc.lazyLoad'])
                 templateUrl: 'templates/main',
                 controller: 'MainController'
             })
+            .when('/about', {
+                templateUrl: 'templates/about',
+                controller: 'AboutController'
+            })
+            .when('/support', {
+                templateUrl: 'templates/support',
+                controller: 'SupportController'
+            })
             .when('/create', {
                 templateUrl: 'templates/create',
                 controller: 'CreateController',

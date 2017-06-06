@@ -91,6 +91,57 @@ div(style="padding-top: 10px; padding-bottom: 10px;")
                 img(ng-if='dataLoading', src='data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==')
 
   .col-md-10(ng-if='currentTab == 1')
-
+    .row
+      div.col-lg-12
+        table.table
+          thead
+            tr
+              td(style='width: 50px;') #
+              td Channel
+              td Item
+              td From
+              td Open
+              td Entries
+              td Winner
+              td Claimed
+              td(style='width: 50px;') Link
+          tbody
+            tr(ng-repeat='giveaway in enteredGiveaways track by $index')
+              td(style='width: 50px;') {{$index+1}}
+              td {{giveaway.channel}}
+              td {{giveaway.item}}
+              td {{giveaway.fromUser}}
+              td {{giveaway.open}}
+              td {{giveaway.enteredList.length}}
+              td {{giveaway.winner}}
+              td {{giveaway.claimed}}
+              td(style='width: 50px;')
+                button.btn(ng-click='gotoGiveaway($index)') Go
 
   .col-md-10(ng-if='currentTab == 2')
+    .row
+      div.col-lg-12
+        table.table
+          thead
+            tr
+              td(style='width: 50px;') #
+              td Channel
+              td Item
+              td From
+              td Open
+              td Entries
+              td Winner
+              td Claimed
+              td(style='width: 50px;') Link
+          tbody
+            tr(ng-repeat='giveaway in wonGiveaways track by $index')
+              td(style='width: 50px;') {{$index+1}}
+              td {{giveaway.channel}}
+              td {{giveaway.item}}
+              td {{giveaway.fromUser}}
+              td {{giveaway.open}}
+              td {{giveaway.enteredList.length}}
+              td {{giveaway.winner}}
+              td {{giveaway.claimed}}
+              td(style='width: 50px;')
+                button.btn(ng-click='gotoGiveaway($index)') Go
